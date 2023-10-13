@@ -17,10 +17,10 @@ import refpymsi as rp
 
  rp.get_table('tarifs_mco_ghs')
 ]
-````
+```
 
 
-````
+```
 [shape: (8_542, 7)
  ┌─────────┬─────────────────┬───────────┬─────────────────┬────────────┬────────────────┬──────────┐
  │ code    ┆ libelle_court   ┆ type_acte ┆ compatibilite_s ┆ date_debut ┆ libelle_long   ┆ date_fin │
@@ -131,7 +131,7 @@ import refpymsi as rp
 
 ```python
 rp.get_liste('chip')
-````
+```
 
 ```
 {'nom': ['Chimiothérapie hyperthermique intra-péritonéale (CHIP)'],

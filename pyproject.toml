@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "refpymsi"
-version = "0.1.0"
+version = "2023.0.1"
 description = "Référentiels PMSI pour python"
 authors = ["GuillaumePressiat <guillaume.pressiat@gmail.com>"]
 license = "AGPL"

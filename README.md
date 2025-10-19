@@ -6,7 +6,7 @@ Lire les référentiels et accéder à des listes de requêtes pour le PMSI avec
 ## Installation
 
 ```
-pip install https://github.com/GuillaumePressiat/refpymsi/releases/download/2024.0.1/refpymsi-2024.0.1-py3-none-any.whl
+pip install https://github.com/GuillaumePressiat/refpymsi/releases/download/2025.0.1/refpymsi-2025.0.1-py3-none-any.whl
 ```
 
 

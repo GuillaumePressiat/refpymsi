@@ -188,9 +188,16 @@ df_pandas = rp.get_table('ccam_actes', plrs=False)  # Pandas
 print(rp.get_table('orpha').columns)
 ```
 
-## Contribution
 
-Voir [CONTRIBUTING.md](CONTRIBUTING.md) pour savoir comment contribuer au projet.
+
+## Exploration avec Streamlit
+
+Une application Streamlit est disponible pour explorer les données localement :
+- **Tables** : 55 tables de référence avec export CSV
+- **Listes** : 184 listes thématiques avec export JSON  
+- **Recherche** : Moteur de recherche unifié par mot-clé
+
+Voir [README_STREAMLIT.md](README_STREAMLIT.md) pour plus de détails.
 
 ## Licence
 

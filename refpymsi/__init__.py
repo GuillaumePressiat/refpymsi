@@ -10,3 +10,5 @@ from refpymsi.listes.get_liste import get_liste
 from refpymsi.listes.get_liste import get_dictionnaire_listes
 
 from refpymsi.utils import get_data_path
+from refpymsi.utils import list_available_tables
+from refpymsi.utils import list_available_listes

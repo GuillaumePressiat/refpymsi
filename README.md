@@ -2,188 +2,196 @@
 
 Lire les référentiels et accéder à des listes de requêtes pour le PMSI avec python
 
-
 ## Installation
 
-```
+```bash
+# Installation depuis GitHub
 pip install https://github.com/GuillaumePressiat/refpymsi/releases/download/2026.0.0/refpymsi-2026.0.0-py3-none-any.whl
 ```
 
+## Résumé des données disponibles
 
+### Tables de référence (55)
 
+| Catégorie | Nombre | Exemples |
+|-----------|--------|----------|
+| CCAM (y compris tarifs CCAM) | 16 | ccam_actes, ccam_descri, ccam_hierarchie_actes |
+| CIM-10 | 2 | cim, cim_hierarchie_code |
+| CSARR | 9 | csarr_acte_ref, csarr_code, csarr_hier |
+| Tarifs (hors CCAM) | 5 | tarifs_mco_ghs, tarifs_had_ght, tarifs_mco_supplements |
+| GHS/GHM | 3 | ghm_dms_nationales, ghm_ghm_regroupement |
+| Géographie | 1 | codes_geo_com_ts_corresp |
+| Libellés SSR | 6 | lib_ssr_autoum, lib_ssr_cm, lib_ssr_gme |
+| Médicaments | 6 | lpp_fiche, mco_aturef_atih_indications |
+| Autres | 7 | orpha, dictionnaire_tables, lib_mco_um, ... |
 
-## Tables de références
+### Listes thématiques (184)
+
+| Thématique | Nombre | Exemples |
+|------------|--------|----------|
+| Recours exceptionnels | 59 | CANCERO_EXH_APP_ORG_01, chip, cathe_cardiaque_interv_pediatrique_cardiopathie_congenitales |
+| Pathologies (hors recours) | 2 | bpco_exacerbee, chir_oesophage_hors_cancer |
+| Réanimation | 2 | arec_rea_nnat, rea_nnat_moins_700g |
+| Pédiatrie | 2 | ... |
+| Autres | 119 | ... |
+
+> **Note** : Certaines listes comme `CANCERO_EXH_APP_ORG_*` sont à la fois des recours exceptionnels et des pathologies. Elles sont comptabilisées dans la catégorie "Recours exceptionnels" pour éviter les doublons.
+
+## Démarrage rapide
 
 ```python
-# Exemples
 import refpymsi as rp
 
-[rp.get_table('ccam_actes'), 
- 
- rp.get_table('orpha'),
+# Liste toutes les tables disponibles
+tables_disponibles = rp.list_available_tables()
+print(f"{len(tables_disponibles)} tables disponibles")
 
- rp.get_table('tarifs_mco_ghs')
-]
+# Liste toutes les listes disponibles  
+listes_disponibles = rp.list_available_listes()
+print(f"{len(listes_disponibles)} listes disponibles")
 ```
 
+## Tables de référence
 
-```
-[shape: (8_542, 7)
- ┌─────────┬─────────────────┬───────────┬─────────────────┬────────────┬────────────────┬──────────┐
- │ code    ┆ libelle_court   ┆ type_acte ┆ compatibilite_s ┆ date_debut ┆ libelle_long   ┆ date_fin │
- │ ---     ┆ ---             ┆ ---       ┆ exe             ┆ ---        ┆ ---            ┆ ---      │
- │ str     ┆ str             ┆ str       ┆ ---             ┆ str        ┆ str            ┆ str      │
- │         ┆                 ┆           ┆ str             ┆            ┆                ┆          │
- ╞═════════╪═════════════════╪═══════════╪═════════════════╪════════════╪════════════════╪══════════╡
- │ AAFA001 ┆ exérèse T.      ┆ 0         ┆ 0               ┆ 2005-03-01 ┆ Exérèse de     ┆ null     │
- │         ┆ intraparench    ┆           ┆                 ┆            ┆ tumeur intrapa ┆          │
- │         ┆ cervelet…       ┆           ┆                 ┆            ┆ renchym…       ┆          │
- │ AAFA002 ┆ exérèse T.      ┆ 0         ┆ 0               ┆ 2005-03-01 ┆ Exérèse de     ┆ null     │
- │         ┆ intraparench    ┆           ┆                 ┆            ┆ tumeur intrapa ┆          │
- │         ┆ cerveau …       ┆           ┆                 ┆            ┆ renchym…       ┆          │
- │ AAFA003 ┆ exérèse lés.    ┆ 0         ┆ 0               ┆ 2005-03-01 ┆ Exérèse de     ┆ null     │
- │         ┆ tr. céréb.      ┆           ┆                 ┆            ┆ lésion du      ┆          │
- │         ┆ craniot.        ┆           ┆                 ┆            ┆ tronc céréb…   ┆          │
- │ AAFA004 ┆ hémisphérectomi ┆ 0         ┆ 0               ┆ 2005-03-01 ┆ Hémisphérectom ┆ null     │
- │         ┆ e fct craniot.  ┆           ┆                 ┆            ┆ ie             ┆          │
- │         ┆                 ┆           ┆                 ┆            ┆ fonctionnelle, ┆          │
- │         ┆                 ┆           ┆                 ┆            ┆ …              ┆          │
- │ …       ┆ …               ┆ …         ┆ …               ┆ …          ┆ …              ┆ …        │
- │ ZZQX200 ┆ EXAM HISTOPATH  ┆ 0         ┆ 0               ┆ 2014-04-14 ┆ Examen histopa ┆ null     │
- │         ┆ BIOPSIES ÉTAGÉS ┆           ┆                 ┆            ┆ thologique de  ┆          │
- │         ┆ 2…              ┆           ┆                 ┆            ┆ biop…          ┆          │
- │ ZZQX217 ┆ EXAM HISTOPATH  ┆ 0         ┆ 0               ┆ 2014-04-14 ┆ Examen histopa ┆ null     │
- │         ┆ BIOPSIES 1      ┆           ┆                 ┆            ┆ thologique de  ┆          │
- │         ┆ STRUCT…         ┆           ┆                 ┆            ┆ biop…          ┆          │
- │ ZZQX603 ┆ TEST DETECT     ┆ 0         ┆ 0               ┆ 2020-02-18 ┆ Test de        ┆ null     │
- │         ┆ GENOME          ┆           ┆                 ┆            ┆ détection du   ┆          │
- │         ┆ PAPILLOMAVIRU…  ┆           ┆                 ┆            ┆ génome des …   ┆          │
- │ ZZQX628 ┆ TEST DETECT     ┆ 0         ┆ 0               ┆ 2020-02-18 ┆ Test de        ┆ null     │
- │         ┆ GENOME          ┆           ┆                 ┆            ┆ détection du   ┆          │
- │         ┆ PAPILLOMAVIRU…  ┆           ┆                 ┆            ┆ génome des …   ┆          │
- └─────────┴─────────────────┴───────────┴─────────────────┴────────────┴────────────────┴──────────┘,
- shape: (9_546, 12)
- ┌───────┬────────────┬────────────┬────────────┬───┬────────────┬───────────┬───────────┬──────────┐
- │ id    ┆ orphanumbe ┆ expertlink ┆ name       ┆ … ┆ omim       ┆ umls      ┆ mesh      ┆ meddra   │
- │ ---   ┆ r          ┆ ---        ┆ ---        ┆   ┆ ---        ┆ ---       ┆ ---       ┆ ---      │
- │ str   ┆ ---        ┆ str        ┆ str        ┆   ┆ str        ┆ str       ┆ str       ┆ str      │
- │       ┆ str        ┆            ┆            ┆   ┆            ┆           ┆           ┆          │
- ╞═══════╪════════════╪════════════╪════════════╪═══╪════════════╪═══════════╪═══════════╪══════════╡
- │ 3555  ┆ 5          ┆ http://www ┆ Déficit en ┆ … ┆ 609016     ┆ C0342786  ┆ null      ┆ null     │
- │       ┆            ┆ .orpha.net ┆ 3-hydroxya ┆   ┆            ┆ ;         ┆           ┆          │
- │       ┆            ┆ /consor/cg ┆ cyl-CoA    ┆   ┆            ┆ C1969443  ┆           ┆          │
- │       ┆            ┆ i-…        ┆ dés…       ┆   ┆            ┆           ┆           ┆          │
- │ 3297  ┆ 6          ┆ http://www ┆ Déficit en ┆ … ┆ 210200 ;   ┆ C0268600  ┆ C535308   ┆ null     │
- │       ┆            ┆ .orpha.net ┆ 3-méthylcr ┆   ┆ 210210     ┆           ┆           ┆          │
- │       ┆            ┆ /consor/cg ┆ otonyl-CoA ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆ i-…        ┆ …          ┆   ┆            ┆           ┆           ┆          │
- │ 1242  ┆ 7          ┆ http://www ┆ Syndrome   ┆ … ┆ 220210 ;   ┆ C0796137  ┆ C535313   ┆ null     │
- │       ┆            ┆ .orpha.net ┆ 3C         ┆   ┆ 300963     ┆           ┆           ┆          │
- │       ┆            ┆ /consor/cg ┆            ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆ i-…        ┆            ┆   ┆            ┆           ┆           ┆          │
- │ 335   ┆ 8          ┆ http://www ┆ Syndrome   ┆ … ┆ null       ┆ C3266843  ┆ C535317 ; ┆ 10056894 │
- │       ┆            ┆ .orpha.net ┆ 47,XYY     ┆   ┆            ┆ ;         ┆ D014997   ┆          │
- │       ┆            ┆ /consor/cg ┆            ┆   ┆            ┆ C0043379  ┆           ┆          │
- │       ┆            ┆ i-…        ┆            ┆   ┆            ┆           ┆           ┆          │
- │ …     ┆ …          ┆ …          ┆ …          ┆ … ┆ …          ┆ …         ┆ …         ┆ …        │
- │ 26574 ┆ 508523     ┆ http://www ┆ Hyperphény ┆ … ┆ null       ┆ null      ┆ null      ┆ null     │
- │       ┆            ┆ .orpha.net ┆ lalaninémi ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆ /consor/cg ┆ e due à un ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆ i-…        ┆ d…         ┆   ┆            ┆           ┆           ┆          │
- │ 26575 ┆ 508529     ┆ http://www ┆ Epidermoly ┆ … ┆ null       ┆ null      ┆ null      ┆ null     │
- │       ┆            ┆ .orpha.net ┆ se         ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆ /consor/cg ┆ bulleuse   ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆ i-…        ┆ simple     ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆            ┆ bas…       ┆   ┆            ┆           ┆           ┆          │
- │ 26576 ┆ 508533     ┆ http://www ┆ Syndrome   ┆ … ┆ null       ┆ null      ┆ null      ┆ null     │
- │       ┆            ┆ .orpha.net ┆ de         ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆ /consor/cg ┆ dysplasie  ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆ i-…        ┆ squelettiq ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆            ┆ …          ┆   ┆            ┆           ┆           ┆          │
- │ 26578 ┆ 508542     ┆ http://www ┆ Syndrome   ┆ … ┆ null       ┆ null      ┆ null      ┆ null     │
- │       ┆            ┆ .orpha.net ┆ de pancyto ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆ /consor/cg ┆ pénie      ┆   ┆            ┆           ┆           ┆          │
- │       ┆            ┆ i-…        ┆ progres…   ┆   ┆            ┆           ┆           ┆          │
- └───────┴────────────┴────────────┴────────────┴───┴────────────┴───────────┴───────────┴──────────┘,
- shape: (44_055, 12)
- ┌──────┬────────┬────────────────────┬─────────────┬───┬───────────┬────────────┬─────────┬────────┐
- │ ghs  ┆ ghm    ┆ libelle_ghm        ┆ borne_basse ┆ … ┆ tarif_exh ┆ date_effet ┆ anseqta ┆ time_i │
- │ ---  ┆ ---    ┆ ---                ┆ ---         ┆   ┆ ---       ┆ ---        ┆ ---     ┆ ---    │
- │ str  ┆ str    ┆ str                ┆ i64         ┆   ┆ f64       ┆ str        ┆ str     ┆ str    │
- ╞══════╪════════╪════════════════════╪═════════════╪═══╪═══════════╪════════════╪═════════╪════════╡
- │ 0022 ┆ 01C031 ┆ Craniotomies pour  ┆ 4           ┆ … ┆ 116.2     ┆ 01/03/2010 ┆ 2010    ┆ 2010   │
- │      ┆        ┆ traumatisme, â…    ┆             ┆   ┆           ┆            ┆         ┆        │
- │ 0023 ┆ 01C032 ┆ Craniotomies pour  ┆ 7           ┆ … ┆ 87.53     ┆ 01/03/2010 ┆ 2010    ┆ 2010   │
- │      ┆        ┆ traumatisme, â…    ┆             ┆   ┆           ┆            ┆         ┆        │
- │ 0024 ┆ 01C033 ┆ Craniotomies pour  ┆ 7           ┆ … ┆ 69.99     ┆ 01/03/2010 ┆ 2010    ┆ 2010   │
- │      ┆        ┆ traumatisme, â…    ┆             ┆   ┆           ┆            ┆         ┆        │
- │ 0025 ┆ 01C034 ┆ Craniotomies pour  ┆ 12          ┆ … ┆ 241.16    ┆ 01/03/2010 ┆ 2010    ┆ 2010   │
- │      ┆        ┆ traumatisme, â…    ┆             ┆   ┆           ┆            ┆         ┆        │
- │ …    ┆ …      ┆ …                  ┆ …           ┆ … ┆ …         ┆ …          ┆ …       ┆ …      │
- │ 9631 ┆ 28Z23Z ┆ Techniques         ┆ 0           ┆ … ┆ 0.0       ┆ 01/03/2023 ┆ 2023    ┆ 2023   │
- │      ┆        ┆ complexes          ┆             ┆   ┆           ┆            ┆         ┆        │
- │      ┆        ┆ d'irradiati…       ┆             ┆   ┆           ┆            ┆         ┆        │
- │ 9632 ┆ 28Z24Z ┆ Techniques         ┆ 0           ┆ … ┆ 0.0       ┆ 01/03/2023 ┆ 2023    ┆ 2023   │
- │      ┆        ┆ complexes          ┆             ┆   ┆           ┆            ┆         ┆        │
- │      ┆        ┆ d'irradiati…       ┆             ┆   ┆           ┆            ┆         ┆        │
- │ 9633 ┆ 28Z25Z ┆ Autres techniques  ┆ 0           ┆ … ┆ 0.0       ┆ 01/03/2023 ┆ 2023    ┆ 2023   │
- │      ┆        ┆ d'irradiation …    ┆             ┆   ┆           ┆            ┆         ┆        │
- │ 9639 ┆ 28Z11Z ┆ Techniques         ┆ 0           ┆ … ┆ 0.0       ┆ 01/03/2023 ┆ 2023    ┆ 2023   │
- │      ┆        ┆ spéciales          ┆             ┆   ┆           ┆            ┆         ┆        │
- │      ┆        ┆ d'irradiati…       ┆             ┆   ┆           ┆            ┆         ┆        │
-└───────┴────────────┴────────────┴────────────┴───┴────────────┴───────────┴───────────┴──────────-┘ 
-```
+La bibliothèque donne accès à **55 tables de référence** incluant :
 
-## Listes de requêtes / méthodes
+- **CCAM** : Classification Commune des Actes Médicaux
+- **CIM-10** : Classification Internationale des Maladies
+- **Tarifs** : GHS, GHM, et autres tarifications
+- **Géographie** : Codes géographiques et correspondances
+- **Spécialités** : Référentiels médicaux spécialisés
+
+### Exemples d'utilisation
 
 ```python
-rp.get_liste('chip')
+import refpymsi as rp
+
+# Récupérer une table (format Polars par défaut)
+df_ccam = rp.get_table('ccam_actes')
+print(df_ccam.shape)  # (8542, 7)
+
+# Récupérer au format Pandas
+df_orpha = rp.get_table('orpha', plrs=False)
+print(type(df_orpha))  # <class 'pandas.core.frame.DataFrame'>
+
+# Accéder aux tarifs MCO
+df_tarifs = rp.get_table('tarifs_mco_ghs')
+print(df_tarifs.columns)
+# ['ghs', 'ghm', 'libelle_ghm', 'borne_basse', ..., 'time_i']
 ```
 
-```
-{'nom': ['Chimiothérapie hyperthermique intra-péritonéale (CHIP)'],
- 'abrege': ['chip'],
- 'thematique': ['Recours Exceptionnel'],
- 'actes': ['HPLB003'],
- 'date_saisie': ['2017-04-23T22:00:00Z'],
- 'auteur': ['DGOS - ATIH'],
- 'timestamp': [1493282250]}
-```
+### Tables populaires
 
+| Nom de la table | Description | Lignes | Colonnes |
+|----------------|-------------|--------|----------|
+| `ccam_actes` | Actes CCAM | 8,542 | 7 |
+| `orpha` | Maladies rares (Orphanet) | 9,546 | 12 |
+| `tarifs_mco_ghs` | Tarifs MCO par GHS | 44,055 | 12 |
+| `cim` | Classification CIM-10 | ~14,000 | 5 |
+| `ccam_tarifs` | Tarifs des actes CCAM | ~8,500 | 8 |
+
+## Listes de requêtes
+
+**184 listes thématiques** pour des requêtes PMSI spécifiques, organisées par :
+
+- Recours exceptionnels
+- Pathologies spécifiques
+- Actes médicaux spécialisés
+- Populations particulières
+
+### Exemples d'utilisation
 
 ```python
-rp.get_liste('cathe_cardiaque_interv_pediatrique_cardiopathie_congenitales')
+import refpymsi as rp
+
+# Récupérer une liste spécifique
+data_chip = rp.get_liste('chip')
+print(data_chip['nom'][0])  # "Chimiothérapie hyperthermique intra-péritonéale (CHIP)"
+
+# Liste complexe avec critères
+data_cardiologie = rp.get_liste('cathe_cardiaque_interv_pediatrique_cardiopathie_congenitales')
+print(f"Actes: {data_cardiologie['actes'][:3]}")  # ['DAAF001', 'DAAF002', 'DAGF001', ...]
+
+# Rechercher des listes par thème
+listes_recours = [l for l in rp.list_available_listes() if 'recours' in l.lower()]
 ```
 
-```
-{'nom': ['Cathétérisme cardiaque interventionnel pédiatrique pour cardiopathies congénitales'],
- 'abrege': ['cathe_cardiaque_interv_pediatrique_cardiopathie_congenitales'],
- 'thematique': ['Recours Exceptionnel'],
- 'agemax': [15],
- 'diags': ['Q20', 'Q21', 'Q22', 'Q23', 'Q24', 'Q25', 'Q26'],
- 'positions_diags': ['toutes'],
- 'actes': ['DAAF001',
-  'DAAF002',
-  'DAGF001',
-  'DAHF001',
-  'DAMF001',
-  'DASF003',
-  'DBAF001',
-  'DBAF002',
-  'DBAF003',
-  'DBAF004',
-  'DBAF005',
-  'DBLF009',
-  'DGAF001',
-  'DGAF003',
-  'DGAF004',
-  'DGAF006',
-  'DGAF007',
-  'DGLF003',
-  'EZGF001'],
- 'date_saisie': ['2017-04-23T22:00:00Z'],
- 'commentaire': ["Catégories d'âge suivantes : { [0 - 28 jours] ; [29 jours ; 1 an[ ; [1 an ; 5 ans] ; [6 ans ; 15 ans ] }"],
- 'auteur': ['DGOS - ATIH'],
- 'timestamp': [1493282163]}
+### Listes populaires
+
+| Nom de la liste | Thématique | Description |
+|-----------------|------------|-------------|
+| `chip` | Recours Exceptionnel | Chimiothérapie hyperthermique intra-péritonéale |
+| `cathe_cardiaque_interv_pediatrique_cardiopathie_congenitales` | Recours Exceptionnel | Cathétérisme cardiaque interventionnel pédiatrique |
+| `arec_rea_nnat` | Réanimation | Réanimation néonatale |
+| `bpco_exacerbee` | Pathologie | BPCO exacerbée |
+
+## Fonctions de découverte
+
+```python
+import refpymsi as rp
+
+# Lister toutes les tables disponibles
+tables = rp.list_available_tables()
+print(f"Tables disponibles: {', '.join(tables[:5])}...")
+
+# Lister toutes les listes disponibles
+listes = rp.list_available_listes()
+print(f"Listes disponibles: {', '.join(listes[:5])}...")
+
+# Rechercher des tables par mot-clé
+tables_ccam = [t for t in rp.list_available_tables() if 'ccam' in t.lower()]
+print(f"Tables CCAM: {tables_ccam}")
+
+# Rechercher des listes par thème
+listes_recours = [l for l in rp.list_available_listes() if 'recours' in l.lower()]
 ```
 
+## Documentation des paramètres
+
+### `get_table(nom_table, plrs=True)`
+
+- `nom_table` (str) : Nom de la table à récupérer (voir `list_available_tables()`)
+- `plrs` (bool) : Si True, retourne un DataFrame Polars (défaut). Si False, retourne un DataFrame Pandas.
+
+### `get_liste(nom_liste)`
+
+- `nom_liste` (str) : Nom de la liste à récupérer (voir `list_available_listes()`)
+- Retourne un dictionnaire avec les métadonnées et critères de la liste
+
+### `list_available_tables()`
+
+- Retourne une liste de toutes les tables disponibles
+- Chaque élément est le nom exact à utiliser avec `get_table()`
+
+### `list_available_listes()`
+
+- Retourne une liste de toutes les listes disponibles
+- Chaque élément est le nom exact à utiliser avec `get_liste()`
+
+## Bonnes pratiques
+
+```python
+import refpymsi as rp
+
+# Toujours vérifier que la table/liste existe
+tables = rp.list_available_tables()
+if 'ma_table' in tables:
+    df = rp.get_table('ma_table')
+
+# Pour les grandes tables, préférer Polars (défaut) pour la performance
+df_grand = rp.get_table('tarifs_mco_ghs')  # Polars - rapide
+
+# Pour l'interopérabilité avec d'autres bibliothèques
+df_pandas = rp.get_table('ccam_actes', plrs=False)  # Pandas
+
+# Explorer la structure avant utilisation
+print(rp.get_table('orpha').columns)
+```
+
+## Contribution
+
+Voir [CONTRIBUTING.md](CONTRIBUTING.md) pour savoir comment contribuer au projet.
+
+## Licence
+
+AGPL - Voir [LICENSE](LICENSE) pour plus de détails.
